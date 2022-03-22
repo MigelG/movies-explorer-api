@@ -1,0 +1,27 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "Бэкенд диплома Я.Практикум",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MigelG/movies-explorer-api.git"
+  },
+  "author": "Mihail Gorbunov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MigelG/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/MigelG/movies-explorer-api#readme",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15"
+  }
+}
