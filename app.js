@@ -1,15 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
+const handleErrors = require('./middlewares/errors');
 const {
   login, createUser,
 } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./errors/NotFoundError');
+const { joiSignup, joiSignin } = require('./middlewares/joi');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
+
+app.use(express.json());
 
 mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
@@ -24,27 +29,26 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
 
 app.use(requestLogger);
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
+app.post('/signin', joiSignin, login);
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
+app.post('/signup', joiSignup, createUser);
 
 app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/movies', require('./routes/movies'));
 
+app.use((req, res, next) => {
+  next(new NotFoundError('Маршрут не найден'));
+});
+
 app.use(errorLogger);
+
+// Обработчик ошибок celebrate
+app.use(errors());
+
+// Централизованный обработчик ошибок
+app.use(handleErrors);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

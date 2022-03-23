@@ -2,18 +2,18 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.send(err));
+    .catch(next);
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     {
       name: req.body.name,
-      email: req.body.about,
+      email: req.body.email,
     },
     {
       new: true,
@@ -21,11 +21,10 @@ module.exports.updateUser = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.send(err));
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
-  console.log(req.body);
+module.exports.createUser = (req, res, next) => {
   const {
     name, email, password,
   } = req.body;
@@ -39,10 +38,10 @@ module.exports.createUser = (req, res) => {
         email: user.email,
       },
     }))
-    .catch((err) => res.send(err));
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -55,5 +54,5 @@ module.exports.login = (req, res) => {
 
       res.send({ token });
     })
-    .catch((err) => res.send(err));
+    .catch(next);
 };

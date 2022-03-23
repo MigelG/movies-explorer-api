@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { regExpUrl } = require('../utils/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -24,17 +25,17 @@ const movieSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-    match: /^https?:\/\/[\w\-.~:/?#@!$&'()*+,;=]+\.[\w\-.~:/?#@!$&'()*+,;=]+$/,
+    match: regExpUrl,
   },
   trailerLink: {
     type: String,
     required: true,
-    match: /^https?:\/\/[\w\-.~:/?#@!$&'()*+,;=]+\.[\w\-.~:/?#@!$&'()*+,;=]+$/,
+    match: regExpUrl,
   },
   thumbnail: {
     type: String,
     required: true,
-    match: /^https?:\/\/[\w\-.~:/?#@!$&'()*+,;=]+\.[\w\-.~:/?#@!$&'()*+,;=]+$/,
+    match: regExpUrl,
   },
   owner: {
     type: String,
