@@ -1,8 +1,9 @@
 const Movie = require('../models/movie');
+const { BadRequestError, NotFoundError, ForbiddenError } = require('../errors/index');
 
 module.exports.getSavedMovies = (req, res, next) => {
   Movie.find({})
-    .then((movies) => res.send({ data: movies }))
+    .then((movies) => res.status(200).send({ data: movies }))
     .catch(next);
 };
 
@@ -34,21 +35,26 @@ module.exports.createMovie = (req, res, next) => {
     nameEN,
     owner: req.user._id,
   })
-    .then((movie) => res.send({ data: movie }))
-    .catch(next);
+    .then((movie) => res.status(200).send({ data: movie }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Ошибка валидации'));
+      }
+      next(err);
+    });
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.id)
     .then((movie) => {
       if (!movie) {
-        res.send({ message: 'Фильм не найден' });
+        next(new NotFoundError('Фильм не найден'));
       }
       if (movie.owner !== req.user._id) {
-        res.send({ message: 'Доступ запрещен' });
+        next(new ForbiddenError('Доступ запрещен'));
       }
       movie.remove()
-        .then(() => res.send({ message: 'Фильм успешно удален' }));
+        .then(() => res.status(200).send({ message: 'Фильм успешно удален' }));
     })
     .catch(next);
 };
