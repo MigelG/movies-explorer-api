@@ -48,10 +48,10 @@ module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.id)
     .then((movie) => {
       if (!movie) {
-        next(new NotFoundError('Фильм не найден'));
+        throw new NotFoundError('Фильм не найден');
       }
       if (movie.owner !== req.user._id) {
-        next(new ForbiddenError('Доступ запрещен'));
+        throw new ForbiddenError('Доступ запрещен');
       }
       movie.remove()
         .then(() => res.status(200).send({ message: 'Фильм успешно удален' }));
