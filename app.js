@@ -2,18 +2,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
-const handleErrors = require('./middlewares/errors');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+const {
+  handleErrors,
+  limiter,
+  requestLogger,
+  errorLogger,
+} = require('./middlewares/index');
 const { router } = require('./routes');
+const { dbUrl, dbName } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
+app.use(limiter);
 app.use(helmet());
 
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(`${dbUrl}/${dbName}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

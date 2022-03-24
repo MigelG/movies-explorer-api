@@ -1,6 +1,5 @@
 const express = require('express');
-const auth = require('../middlewares/auth');
-const { joiSignin, joiSignup } = require('../middlewares/joi');
+const { auth, joiSignin, joiSignup } = require('../middlewares/index');
 const { login, createUser } = require('../controllers/users');
 const { NotFoundError } = require('../errors/index');
 

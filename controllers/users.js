@@ -7,6 +7,7 @@ const User = require('../models/user');
 const {
   BadRequestError, NotFoundError, UnauthorizedError, ConflictError,
 } = require('../errors/index');
+const { secretKey } = require('../utils/constants');
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -82,7 +83,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key',
+        NODE_ENV === 'production' ? JWT_SECRET : secretKey,
         { expiresIn: '7d' },
       );
 
