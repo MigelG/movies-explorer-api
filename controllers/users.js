@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const {
-  BadRequestError, NotFoundError, UnauthorizedError, ConflictError,
+  BadRequestError, NotFoundError, ConflictError,
 } = require('../errors/index');
 const { secretKey } = require('../utils/constants');
 
@@ -17,12 +17,7 @@ module.exports.getUser = (req, res, next) => {
       }
       throw new NotFoundError('Пользователь не найден');
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Передан невалидный id'));
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -47,7 +42,11 @@ module.exports.updateUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Ошибка валидации'));
       }
-      next(err);
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким адресом уже существует'));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -71,8 +70,9 @@ module.exports.createUser = (req, res, next) => {
       }
       if (err.code === 11000) {
         next(new ConflictError('Пользователь с таким адресом уже существует'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -89,7 +89,7 @@ module.exports.login = (req, res, next) => {
 
       res.status(200).send({ token });
     })
-    .catch(() => {
-      next(new UnauthorizedError('Ошибка авторизации'));
+    .catch((err) => {
+      next(err);
     });
 };

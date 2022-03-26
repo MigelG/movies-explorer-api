@@ -39,8 +39,9 @@ module.exports.createMovie = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Ошибка валидации'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -51,10 +52,16 @@ module.exports.deleteMovie = (req, res, next) => {
         throw new NotFoundError('Фильм не найден');
       }
       if (movie.owner !== req.user._id) {
-        throw new ForbiddenError('Доступ запрещен');
+        throw new ForbiddenError('Доступ запрещен: попытка удалить чужой фильм');
       }
-      movie.remove()
+      return movie.remove()
         .then(() => res.status(200).send({ message: 'Фильм успешно удален' }));
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Передан невалидный id'));
+      } else {
+        next(err);
+      }
+    });
 };

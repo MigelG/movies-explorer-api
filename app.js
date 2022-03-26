@@ -9,15 +9,9 @@ const {
   errorLogger,
 } = require('./middlewares/index');
 const { router } = require('./routes');
-const { dbUrl, dbName } = require('./utils/constants');
-
-const { PORT = 3000 } = process.env;
+const { dbUrl, dbName, PORT } = require('./utils/constants');
 
 const app = express();
-app.use(limiter);
-app.use(helmet());
-
-app.use(express.json());
 
 mongoose.connect(`${dbUrl}/${dbName}`, {
   useNewUrlParser: true,
@@ -31,6 +25,9 @@ mongoose.connect(`${dbUrl}/${dbName}`, {
   });
 
 app.use(requestLogger);
+app.use(limiter);
+app.use(helmet());
+app.use(express.json());
 
 app.use(router);
 

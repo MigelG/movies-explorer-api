@@ -2,6 +2,7 @@ const auth = require('./auth');
 const handleErrors = require('./errors');
 const {
   joiCreateMovie,
+  joiDeleteMovie,
   joiSignin,
   joiSignup,
   joiUpdateUser,
@@ -13,6 +14,7 @@ module.exports = {
   auth,
   handleErrors,
   joiCreateMovie,
+  joiDeleteMovie,
   joiSignup,
   joiUpdateUser,
   joiSignin,

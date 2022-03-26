@@ -11,9 +11,15 @@ const joiCreateMovie = celebrate({
     image: Joi.string().required().pattern(regExpUrl),
     trailerLink: Joi.string().required().pattern(regExpUrl),
     thumbnail: Joi.string().required().pattern(regExpUrl),
-    movieId: Joi.string().required().hex(),
+    movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
+  }),
+});
+
+const joiDeleteMovie = celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().length(24).hex().required(),
   }),
 });
 
@@ -41,6 +47,7 @@ const joiSignin = celebrate({
 
 module.exports = {
   joiCreateMovie,
+  joiDeleteMovie,
   joiUpdateUser,
   joiSignup,
   joiSignin,
