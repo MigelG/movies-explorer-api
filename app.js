@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
@@ -12,6 +13,8 @@ const { router } = require('./routes');
 const { dbUrl, dbName, PORT } = require('./utils/constants');
 
 const app = express();
+
+app.use(cors());
 
 mongoose.connect(`${dbUrl}/${dbName}`, {
   useNewUrlParser: true,
