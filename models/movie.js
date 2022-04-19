@@ -38,7 +38,8 @@ const movieSchema = new mongoose.Schema({
     match: regExpUrl,
   },
   owner: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
     required: true,
   },
   movieId: {
